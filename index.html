@@ -265,7 +265,12 @@
     </main>
 
     <!-- 게시판 로직 구현 자바스크립트 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script>
+        const supabase = window.supabase.createClient(
+          "PROJECT_URL",
+          "ANON_KEY"
+        );
         // 초기 샘플 데이터 설정
         let posts = [
             { id: 1, category: '드론', title: '이번 주말 한강 정기 비행 모임 공지', content: '이번 주 토요일 오후 3시 한강공원에서 모입니다!\n초보자분들도 환영하니 기체만 챙겨서 가볍게 오세요. 드론 레이싱 팁 공유해 드립니다.', date: '2026-06-20' },
@@ -371,6 +376,37 @@
         window.onload = function() {
             renderPosts();
         };
+
+        async function addPost() {     //글쓰기 저장
+
+          const title =
+            document.getElementById("title").value;
+        
+          const content =
+            document.getElementById("content").value;
+        
+          await supabase
+            .from("posts")
+            .insert([
+              {
+                title,
+                content
+              }
+            ]);
+        
+          alert("등록 완료");
+
+            async function loadPosts() {     //글쓰기 불러오
+
+              const { data } =
+                await supabase
+                  .from("posts")
+                  .select("*")
+                  .order("id", { ascending:false });
+            
+              console.log(data);
+}
+}
     </script>
 </body>
 </html>
