@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HobbyHub | 우리들의 취미 아지트</title>
+    <!-- 구글 폰트 (레트로한 느낌의 둥근 고딕과 본문용 폰트) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DooHyeon&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- 레트로 디자인 시스템 설정 --- */
+        :root {
+            --bg-color: #f9f6ff;       /* 연보라빛이 살짝 도는 밝은 배경 */
+            --primary-purple: #d1b6f7; /* 메인 연보라 (픽셀/파스텔 느낌) */
+            --primary-green: #a8e6cf;  /* 메인 연초록 (상큼한 포인트) */
+            --dark-border: #333333;    /* 레트로의 핵심! 두꺼운 검정 테두리 */
+            --text-color: #222222;
+            --white: #ffffff;
+            --shadow: 4px 4px 0px #333333; /* 90년대 풍의 딱딱한 그림자 */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding-bottom: 60px;
+        }
+
+        /* --- 헤더 영역 --- */
+        header {
+            background-color: var(--primary-purple);
+            border-bottom: 4px solid var(--dark-border);
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        h1 {
+            font-family: 'DooHyeon', sans-serif;
+            font-size: 2.5rem;
+            color: var(--white);
+            text-shadow: 3px 3px 0px var(--dark-border);
+            letter-spacing: 2px;
+        }
+
+        p.subtitle {
+            font-size: 0.95rem;
+            margin-top: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        /* --- 네비게이션 (카테고리 선택) --- */
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px auto;
+            max-width: 800px;
+            padding: 0 20px;
+        }
+
+        .nav-btn {
+            background-color: var(--white);
+            border: 3px solid var(--dark-border);
+            padding: 10px 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: all 0.1s ease;
+            font-size: 1rem;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px var(--dark-border);
+        }
+
+        .nav-btn.active {
+            background-color: var(--primary-green);
+        }
+
+        /* --- 메인 컨텐츠 영역 --- */
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 글쓰기 폼 상자 */
+        .form-container {
+            background-color: var(--white);
+            border: 3px solid var(--dark-border);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+            border-radius: 4px;
+        }
+
+        .form-container h2 {
+            font-family: 'DooHyeon', sans-serif;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            color: #444;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        input, textarea, select {
+            border: 3px solid var(--dark-border);
+            padding: 10px;
+            font-size: 0.95rem;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            background-color: #faf5ff;
+        }
+
+        #postTitle { flex: 2; }
+        #postCategory { flex: 1; font-weight: bold; background-color: #fff; }
+        #postContent { width: 100%; height: 100px; resize: none; margin-bottom: 10px; }
+
+        .submit-btn {
+            background-color: var(--primary-purple);
+            border: 3px solid var(--dark-border);
+            padding: 10px 25px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            display: block;
+            margin-left: auto;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--primary-green);
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px var(--dark-border);
+        }
+
+        /* --- 게시판 리스트 영역 --- */
+        .board-title {
+            font-family: 'DooHyeon', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            border-left: 6px solid var(--primary-purple);
+            padding-left: 10px;
+        }
+
+        .post-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .post-card {
+            background-color: var(--white);
+            border: 3px solid var(--dark-border);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            position: relative;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            border: 2px solid var(--dark-border);
+            margin-bottom: 10px;
+            background-color: var(--primary-green);
+        }
+
+        .badge.reading { background-color: var(--primary-purple); }
+        .badge.etc { background-color: #fff6b1; }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .card-content {
+            font-size: 0.95rem;
+            color: #555;
+            line-height: 1.5;
+            white-space: pre-line;
+        }
+
+        .card-date {
+            font-size: 0.8rem;
+            color: #999;
+            text-align: right;
+            margin-top: 15px;
+        }
+
+        /* 게시글이 없을 때 예외 처리 */
+        .no-posts {
+            text-align: center;
+            padding: 4px 0;
+            color: #777;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 헤더 -->
+    <header>
+        <h1>🕹️ HOBBY HUB 🕹️</h1>
+        <p class="subtitle">드론부터 독서까지, 우리들의 레트로 아지트</p>
+    </header>
+
+    <!-- 카테고리 탭 메뉴 -->
+    <nav>
+        <button class="nav-btn active" onclick="filterCategory('전체')">📺 전체보기</button>
+        <button class="nav-btn" onclick="filterCategory('드론')">🛸 드론 동아리</button>
+        <button class="nav-btn" onclick="filterCategory('독서')">📚 독서 동아리</button>
+        <button class="nav-btn" onclick="filterCategory('기타')">🎲 기타 취미</button>
+    </nav>
+
+    <!-- 메인 섹션 -->
+    <main>
+        <!-- 글쓰기 폼 -->
+        <section class="form-container">
+            <h2>✍️ 아지트에 글 남기기</h2>
+            <div class="input-group">
+                <select id="postCategory">
+                    <option value="드론">드론</option>
+                    <option value="독서">독서</option>
+                    <option value="기타">기타</option>
+                </select>
+                <input type="text" id="postTitle" placeholder="제목을 입력하세요 (최대 30자)" maxlength="30">
+            </div>
+            <textarea id="postContent" placeholder="여기에 재미있는 소식을 공유해주세요!"></textarea>
+            <button class="submit-btn" onclick="addPost()">올리기!</button>
+        </section>
+
+        <!-- 게시판 목록 -->
+        <section>
+            <h2 class="board-title" id="currentBoardTitle">전체 게시글</h2>
+            <div class="post-list" id="postList">
+                <!-- 자바스크립트로 게시글이 동적 추가되는 공간 -->
+            </div>
+        </section>
+    </main>
+
+    <!-- 게시판 로직 구현 자바스크립트 -->
+    <script>
+        // 초기 샘플 데이터 설정
+        let posts = [
+            { id: 1, category: '드론', title: '이번 주말 한강 정기 비행 모임 공지', content: '이번 주 토요일 오후 3시 한강공원에서 모입니다!\n초보자분들도 환영하니 기체만 챙겨서 가볍게 오세요. 드론 레이싱 팁 공유해 드립니다.', date: '2026-06-20' },
+            { id: 2, category: '독서', title: '6월의 추천 도서: SF 소설 읽기', content: '안녕하세요! 이번 달 독서 동아리 지정 도서는 SF 단편집입니다.\n다들 어디까지 읽으셨나요? 댓글로 편하게 기대평 남겨주세요!', date: '2026-06-19' }
+        ];
+
+        let currentCategory = '전체';
+
+        // 화면에 게시글 렌더링하는 함수
+        function renderPosts() {
+            const postListContainer = document.getElementById('postList');
+            postListContainer.innerHTML = '';
+
+            // 카테고리 필터링
+            const filteredPosts = posts.filter(post => {
+                return currentCategory === '전체' || post.category === currentCategory;
+            });
+
+            if (filteredPosts.length === 0) {
+                postListContainer.innerHTML = '<p class="no-posts">아직 작성된 글이 없습니다. 첫 글의 주인공이 되어보세요! 🚀</p>';
+                return;
+            }
+
+            // 역순 배치 (최신글이 위로)
+            filteredPosts.slice().reverse().forEach(post => {
+                const card = document.createElement('div');
+                card.className = 'post-card';
+
+                // 카테고리별 배지 색상 클래스 분기
+                let badgeClass = 'etc';
+                if (post.category === '드론') badgeClass = 'drone';
+                if (post.category === '독서') badgeClass = 'reading';
+
+                card.innerHTML = `
+                    <span class="badge ${badgeClass}">${post.category}</span>
+                    <div class="card-title">${escapeHtml(post.title)}</div>
+                    <div class="card-content">${escapeHtml(post.content)}</div>
+                    <div class="card-date">📅 ${post.date}</div>
+                `;
+                postListContainer.appendChild(card);
+            });
+        }
+
+        // 새 글 등록 함수
+        function addPost() {
+            const category = document.getElementById('postCategory').value;
+            const title = document.getElementById('postTitle').value.trim();
+            const content = document.getElementById('postContent').value.trim();
+
+            if (!title || !content) {
+                alert('제목과 내용을 모두 입력해주세요! 🕹️');
+                return;
+            }
+
+            const today = new Date().toISOString().split('T')[0];
+
+            const newPost = {
+                id: Date.now(),
+                category: category,
+                title: title,
+                content: content,
+                date: today
+            };
+
+            posts.push(newPost);
+            
+            // 입력창 초기화
+            document.getElementById('postTitle').value = '';
+            document.getElementById('postContent').value = '';
+
+            renderPosts();
+        }
+
+        // 카테고리 변경 함수
+        function filterCategory(category) {
+            currentCategory = category;
+            document.getElementById('currentBoardTitle').innerText = `${category} 게시글`;
+
+            // 버튼 활성화 스타일 변경
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => {
+                if (btn.innerText.includes(category)) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            renderPosts();
+        }
+
+        // 보안을 위한 HTML 이스케이프 함수 (XSS 방지)
+        function escapeHtml(text) {
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // 페이지 로드 시 최초 실행
+        window.onload = function() {
+            renderPosts();
+        };
+    </script>
+</body>
+</html>
